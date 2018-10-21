@@ -1,0 +1,88 @@
+0. compile
+unzip hd_oldlinux.img.zip
+sudo apt-get install bin86 qemu
+install gcc 4.4 like below steps
+cd /linux-0.0.1
+./make
+==> create Image file.
+./make run
+==> use qemu to run image
+
+qemu-system-i386 -hdb hd_oldlinux.img -fda Image -boot a
+=================================================================
+1. reference
+use gcc 4.4
+https://mapopa.blogspot.com/2008/09/linux-0.html
+https://lwn.net/Articles/263562/
+http://sagarchhetri.com.np/2016/09/28/compiling-linux-0-01-again-feeling-trovalds/
+
+2. patch for bug compile
+https://gist.github.com/oraccha/775943
+--hd interrupt
+https://github.com/mariuz/linux-0.01/issues/1
+
+
+3. install gcc 4.4
+sudo apt-get install python-software-properties
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get install gcc-4.4
+sudo apt-get install g++-4.4
+dpkg --list | grep compiler
+ls -lh /usr/bin/gcc*
+ls -lh /usr/bin/g++*
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.4 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.4
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 40 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+sudo update-alternatives --config gcc
+gcc -v
+
+Note: if gcc-4.4 is not found
+(https://askubuntu.com/questions/789179/how-to-install-gcc-4-4-on-ubuntu-16-04)
+Add lines to /etc/apt/sources.list
+
+deb http://vn.archive.ubuntu.com/ubuntu/ trusty main universe
+deb http://vn.archive.ubuntu.com/ubuntu/ trusty-updates main universe
+
+and...
+sudo apt-get update
+try again --> sudo apt-get install gcc-4.4
+
+4. compile on ubuntu 64bit (ubuntu 18.04)
+https://github.com/mariuz/linux-0.01
+
+-- add
+deb http://vn.archive.ubuntu.com/ubuntu/ trusty main universe
+deb http://vn.archive.ubuntu.com/ubuntu/ trusty-updates main universe
+
+sudo apt install gcc-4.4-multilib
+sudo apt install g++-4.4-multilib
+-- if g++-7 is not installed
+sudo apt install g++
+
+4.1. install Quemu-2.5 (instead of 2.10 as default by using apt install qemu)
+Ref:
+https://mike632t.wordpress.com/2014/05/03/compiling-qemu/
+
+apt show qemu-system-x86
+sudo apt-get remove --auto-remove qemu
+wget http://wiki.qemu.org/download/qemu-2.5.0.tar.bz2
+tar -xvjf qemu-2.5.0.tar.bz2
+cd qemu-2.5.0/
+-- error
+util/memfd.c:40:12: error: static declaration of memfd_create follows non-static declaratio
+https://git.qemu.org/?p=qemu.git;a=commit;h=75e5b70e6b5dcc4f2219992d7cffa462aa406af0
+-- hd interrupt
+https://github.com/mariuz/linux-0.01/issues/1
+
+sudo apt-get install pkg-config --no-install-recommends
+sudo apt-get install bridge-utils uml-utilities --no-install-recommends
+sudo apt-get install zlib1g-dev --no-install-recommends
+sudo apt-get install libglib2.0-dev --no-install-recommends
+sudo apt-get install autoconf --no-install-recommends
+sudo apt-get install automake --no-install-recommends
+sudo apt-get install libtool --no-install-recommends
+sudo apt-get install libsdl1.2-dev --no-install-recommends
+./configure --target-list=i386-softmmu
+make
+./../qemu-2.5.0/i386-softmmu/qemu-system-i386 -hdb hd_oldlinux.img -fda Image -boot a 
+
+
